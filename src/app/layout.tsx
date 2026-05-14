@@ -28,9 +28,6 @@ function Header() {
           <Link href="/login" className="button--ghost">
             Login
           </Link>
-          <Link href="/signup" className="button">
-            Sign Up
-          </Link>
         </div>
       </div>
     </header>

@@ -6,17 +6,21 @@ import type { FormEvent } from 'react';
 
 type AuthMode = 'signup' | 'login';
 
+type AuthRole = 'employee' | 'boss';
+
 type Props = {
   mode: AuthMode;
+  role?: AuthRole;
   disabled?: boolean;
 };
 
-export function AuthForm({ mode, disabled = false }: Props) {
+export function AuthForm({ mode, role = 'employee', disabled = false }: Props) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [formState, setFormState] = useState({ fullName: '', email: '', password: '' });
+  const emailPlaceholder = role === 'boss' ? 'boss@company.com' : 'employee@company.com';
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -90,7 +94,7 @@ export function AuthForm({ mode, disabled = false }: Props) {
           type="email"
           value={formState.email}
           onChange={(event) => setFormState((current) => ({ ...current, email: event.target.value }))}
-          placeholder="employee@company.com"
+          placeholder={emailPlaceholder}
           required
         />
       </div>
@@ -117,7 +121,12 @@ export function AuthForm({ mode, disabled = false }: Props) {
         {isPending ? 'Please wait...' : mode === 'signup' ? 'Create employee account' : 'Sign in now'}
       </button>
 
-      {mode === 'login' ? <div className="notice">Only approved office IP addresses can use this form.</div> : null}
+      {mode === 'login' && role === 'employee' ? (
+        <div className="notice">Only approved office IP addresses can use this form.</div>
+      ) : null}
+      {mode === 'login' && role === 'boss' ? (
+        <div className="notice">Boss login uses the BOSS_EMAIL / BOSS_PASSWORD environment credentials.</div>
+      ) : null}
     </form>
   );
 }

@@ -37,7 +37,7 @@ export default async function EmployeeLoginPage() {
             )}
           </article>
           <article className="panel glass">
-            <AuthForm mode="login" disabled={!ipAllowed} />
+            <AuthForm mode="login" role="employee" disabled={!ipAllowed} />
           </article>
         </div>
       </div>

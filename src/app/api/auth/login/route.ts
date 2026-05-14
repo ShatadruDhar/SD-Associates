@@ -5,16 +5,6 @@ import { getClientIp, isAllowedLoginIp, parseAllowedIps } from '@/lib/ip';
 
 export async function POST(request: NextRequest) {
   try {
-    const clientIp = getClientIp(request.headers);
-    const allowedIps = parseAllowedIps(process.env.ALLOWED_LOGIN_IPS);
-
-    if (!isAllowedLoginIp(clientIp, allowedIps)) {
-      return NextResponse.json(
-        { error: 'Login is only allowed from approved IP addresses.' },
-        { status: 403 }
-      );
-    }
-
     const payload = await request.json();
     const email = normalizeEmail(String(payload.email ?? ''));
     const password = String(payload.password ?? '');
@@ -22,8 +12,6 @@ export async function POST(request: NextRequest) {
     const bossEmail = normalizeEmail(String(process.env.BOSS_EMAIL ?? ''));
     const bossPassword = String(process.env.BOSS_PASSWORD ?? '');
 
-    // If the request is for the boss account, atomically upsert it so there
-    // is never a window where two concurrent logins both try to create it.
     if (bossEmail && bossPassword && email === bossEmail) {
       if (password !== bossPassword) {
         return NextResponse.json({ error: 'Invalid email or password.' }, { status: 401 });
@@ -44,6 +32,16 @@ export async function POST(request: NextRequest) {
         maxAge: 60 * 60 * 24 * 7,
       });
       return response;
+    }
+
+    const clientIp = getClientIp(request.headers);
+    const allowedIps = parseAllowedIps(process.env.ALLOWED_LOGIN_IPS);
+
+    if (!isAllowedLoginIp(clientIp, allowedIps)) {
+      return NextResponse.json(
+        { error: 'Login is only allowed from approved IP addresses.' },
+        { status: 403 }
+      );
     }
 
     const user = await findUserByEmail(email);

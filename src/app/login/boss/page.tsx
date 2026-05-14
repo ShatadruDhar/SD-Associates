@@ -15,7 +15,7 @@ export default function BossLoginPage() {
             </p>
           </article>
           <article className="panel glass">
-            <AuthForm mode="login" />
+            <AuthForm mode="login" role="boss" />
           </article>
         </div>
       </div>
