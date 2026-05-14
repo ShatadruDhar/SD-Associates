@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samar Dhar & Associates - Practising Cost & Management Accountants</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-card: rgba(255, 255, 255, 0.8);
+            --text-primary: #221f1f;
+            --text-secondary: #6c757d;
+            --accent: #d4af37;
+            --accent-hover: #b8860b;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --blur: blur(10px);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --bg-card: rgba(45, 45, 45, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #adb5bd;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --blur: blur(20px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Fira Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.22);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        .navbar.shrink {
+            padding: 10px 0;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            gap: 20px;
+        }
+
+        .navbar.shrink .container {
+            padding: 10px 20px;
+        }
+
+        .logo {
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--accent);
+            white-space: nowrap;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 12px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.16);
+            transition: background 0.3s, color 0.3s, transform 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+            background: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-actions a {
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 999px;
+            color: #fff;
+            background: var(--accent);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .nav-actions a:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .hero {
+            min-height: calc(100vh - 90px);
+            height: calc(100vh - 90px);
+            display: grid;
+            align-items: start;
+            padding: 180px 20px 40px;
+            background: transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('src/hero.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            filter: blur(1.2px);
+            transform: scale(1.02);
+            z-index: -2;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 30%, rgba(0,0,0,0.22) 100%);
+            z-index: -1;
+        }
+
+        .hero-inner {
+            width: 100%;
+            max-width: 980px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            align-items: start;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-copy h1 {
+            font-size: clamp(2.6rem, 5vw, 4rem);
+            line-height: 1.05;
+            margin-bottom: 24px;
+            font-weight: 600;
+            color: #ffffff;
+            text-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .hero-copy p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            color: rgba(255, 255, 255, 0.92);
+            margin-bottom: 32px;
+            text-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .hero-buttons .cta-button,
+        .hero-buttons .secondary-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            border-radius: 999px;
+            padding: 14px 26px;
+            font-weight: 600;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .hero-buttons .cta-button {
+            background: #ffffff;
+            color: #0f2a55;
+        }
+
+        .hero-buttons .secondary-button {
+            background: rgba(255,255,255,0.14);
+            color: #f8fbff;
+            border: 1px solid rgba(255,255,255,0.18);
+        }
+
+        .hero-buttons a:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
+        }
+
+
+        @media (max-width: 900px) {
+            .hero-inner {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-right {
+                flex-direction: column;
+                align-items: stretch;
+                width: 100%;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero {
+                padding-top: 90px;
+            }
+
+            .hero-copy h1 {
+                font-size: 2.6rem;
+            }
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: color 0.3s;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-primary);
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        /* Sections */
+        section {
+            padding: 80px 0;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--accent);
+            font-weight: 300;
+        }
+
+        .section-title p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: var(--blur);
+            border: 1px solid var(--shadow);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            transition: all 0.3s;
+            box-shadow: 0 8px 32px var(--shadow);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px var(--shadow), 0 0 0 2px var(--accent);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        /* Services */
+        .service-card {
+            text-align: center;
+        }
+
+        .service-card i {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        /* Logo Wall */
+        .logo-marquee {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            padding: 20px 0;
+            background: var(--bg-card);
+            border: 1px solid var(--shadow);
+            box-shadow: 0 8px 32px var(--shadow);
+        }
+
+        .logo-marquee__track {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            min-width: 400%;
+            animation: marqueeRight 40s linear infinite;
+            will-change: transform;
+        }
+
+        .logo-marquee__item {
+            flex: 0 0 auto;
+            width: 140px;
+            display: grid;
+            gap: 10px;
+            justify-items: center;
+            text-align: center;
+        }
+
+        .logo-marquee__item img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            filter: saturate(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .logo-marquee__item:hover img {
+            transform: scale(1.08);
+        }
+
+        .logo-marquee__item p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .logo-marquee:hover .logo-marquee__track {
+            animation-play-state: paused;
+        }
+
+        @keyframes marqueeRight {
+            from {
+                transform: translateX(-50%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin: 50px 0;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        /* Contact */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .map {
+            height: 300px;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-secondary);
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--bg-card);
+                flex-direction: column;
+                padding: 20px;
+                border-top: 1px solid var(--shadow);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="logo">Samar Dhar & Associates</div>
+            <div class="nav-right">
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#experience">Clients</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <a href="#contact">Request a Call</a>
+                    <a href="employee-login.html">Employee Login</a>
+                </div>
+            </div>
+            <button class="theme-toggle" id="theme-toggle"><i class="fas fa-moon"></i></button>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section id="hero" class="hero">
+        <div class="hero-inner">
+            <div class="hero-copy">
+                <h1>Strategic Cost Accounting & Management Advisory for Indian Businesses</h1>
+                <p>Delivering confident audit, compliance and financial controls for manufacturers, banks, healthcare providers and institutional clients across West Bengal and India.</p>
+                <div class="hero-buttons">
+                    <a href="#services" class="cta-button">Explore More</a>
+                    <a href="#contact" class="secondary-button">Contact Us</a>
+                    <a href="employee-login.html" class="secondary-button">Employee Login</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="container">
+            <div class="section-title">
+                <h2>About Us</h2>
+                <p>Committed to delivering technical excellence and responsive advisory services</p>
+            </div>
+            <div class="card">
+                <p>Samar Dhar & Associates is a firm of Cost and Management Accountants committed to delivering technical excellence, practical support, and responsive advisory services for businesses and institutions. We provide expert cost and management accounting services, audit support, compliance filing, corporate advisory, and specialized reports for industries across manufacturing, trade, education, healthcare, and services.</p>
+                <br>
+                <p><strong>Mission:</strong> To empower businesses through responsible cost management, transparent reporting, and compliance-focused advisory that adds value to financial decisions.</p>
+                <br>
+                <p><strong>Vision:</strong> To be a trusted partner for organizations seeking practical cost accounting solutions, robust control systems, and reliable statutory compliance support.</p>
+                <br>
+                <p><strong>Core Values:</strong> Professional integrity, client-focused solutions, accuracy and timeliness, continuous improvement.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="services">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Services</h2>
+                <p>Comprehensive cost accounting and compliance solutions</p>
+            </div>
+            <div class="grid">
+                <div class="card service-card">
+                    <i class="fas fa-calculator"></i>
+                    <h3>Cost Audit</h3>
+                    <p>Comprehensive cost audit services to meet statutory requirements and support management decisions.</p>
+                </div>
+                <div class="card service-card">
+                    <i class="fas fa-search"></i>
+                    <h3>Internal Audit</h3>
+                    <p>Internal audit, stock audit, and warehouse audit for operational efficiency.</p>
+                </div>
+                <div class="card service-card">
+                    <i class="fas fa-file-alt"></i>
+                    <h3>Compliance & Taxation</h3>
+                    <p>GST consultancy, ROC forms, central excise, and statutory filings.</p>
+                </div>
+                <div class="card service-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Management Consulting</h3>
+                    <p>Financial reporting, budgeting, resource optimization, and corporate restructuring.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience">
+        <div class="container">
+            <div class="section-title">
+                <h2>Experience With</h2>
+                <p>Trusted by leading organizations across industries</p>
+            </div>
+            <div class="logo-marquee">
+                <div class="logo-marquee__track">
+                    <div class="logo-marquee__item">
+                        <img src="src/coal-india-logo-png_seeklogo-304343.png" alt="Coal India">
+                        <p>Coal India</p>
+                    </div>
+                    <div class="logo-marquee__item">
+                        <img src="src/wbsedcl.jpg" alt="WBSEDCL">
+                        <p>WBSEDCL</p>
+                    </div>
+                    <div class="logo-marquee__item">
+                        <img src="src/bmw_industries_ltd_logo.jpeg" alt="BMW Industries">
+                        <p>BMW Industries</p>
+                    </div>
+                    <div class="logo-marquee__item">
+                        <img src="src/Indian Bank.png" alt="Indian Bank">
+                        <p>Indian Bank</p>
+                    </div>
+                    <div class="logo-marquee__item">
+                        <img src="src/state-bank-of-india4988.logowik.com.webp" alt="State Bank of India">
+                        <p>State Bank of India</p>
+                    </div>
+                    <div class="logo-marquee__item">
+                        <img src="src/Alahabad Bank.jpg" alt="Allahabad Bank">
+                        <p>Allahabad Bank</p>
+                    </div>
+                    <div class="logo-marquee__item">
+                        <img src="src/Indian Overseas Bank.png" alt="Indian Overseas Bank">
+                        <p>Indian Overseas Bank</p>
+                    </div>
+                    <div class="logo-marquee__item">
+                        <img src="src/Logo-_VFS_Capital.webp" alt="Village Financial Services">
+                        <p>Village Financial</p>
+                    </div>
+                    <div class="logo-marquee__item">
+                        <img src="src/Rohan Gloves.png" alt="Rohan Gloves Manufacturing">
+                        <p>Rohan Gloves</p>
+                    </div>
+                    <div class="logo-marquee__item">
+                        <img src="src/Usashi Realstates.jpeg" alt="Ushasi Realstates">
+                        <p>Ushasi Realstates</p>
+                    </div>
+                    <!-- Duplicates for continuous loop -->
+                    <div class="logo-marquee__item">
+                        <img src="src/coal-india-logo-png_seeklogo-304343.png" alt="Coal India">
+                        <p>Coal India</p>
+                    </div>
+                    <div class="logo-marquee__item">
+                        <img src="src/wbsedcl.jpg" alt="WBSEDCL">
+                        <p>WBSEDCL</p>
+                    </div>
+                    <div class="logo-marquee__item">
+                        <img src="src/bmw_industries_ltd_logo.jpeg" alt="BMW Industries">
+                        <p>BMW Industries</p>
+                    </div>
+                    <div class="logo-marquee__item">
+                        <img src="src/Indian Bank.png" alt="Indian Bank">
+                        <p>Indian Bank</p>
+                    </div>
+                    <div class="logo-marquee__item">
+                        <img src="src/state-bank-of-india4988.logowik.com.webp" alt="State Bank of India">
+                        <p>State Bank of India</p>
+                    </div>
+                    <div class="logo-marquee__item">
+                        <img src="src/Alahabad Bank.jpg" alt="Allahabad Bank">
+                        <p>Allahabad Bank</p>
+                    </div>
+                    <div class="logo-marquee__item">
+                        <img src="src/Indian Overseas Bank.png" alt="Indian Overseas Bank">
+                        <p>Indian Overseas Bank</p>
+                    </div>
+                    <div class="logo-marquee__item">
+                        <img src="src/Logo-_VFS_Capital.webp" alt="Village Financial Services">
+                        <p>Village Financial</p>
+                    </div>
+                    <div class="logo-marquee__item">
+                        <img src="src/Rohan Gloves.png" alt="Rohan Gloves Manufacturing">
+                        <p>Rohan Gloves</p>
+                    </div>
+                    <div class="logo-marquee__item">
+                        <img src="src/Usashi Realstates.jpeg" alt="Ushasi Realstates">
+                        <p>Ushasi Realstates</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="profile">
+        <div class="container">
+            <div class="section-title">
+                <h2>Proprietor Profile</h2>
+                <p>Meet CMA Samar Dhar</p>
+            </div>
+            <div class="card">
+                <h3>CMA Samar Dhar</h3>
+                <p><strong>Qualifications:</strong> Cost Accountant (ICMAI Registration No. 101762)</p>
+                <p>A practicing Cost Accountant with long experience in cost accounting, audit, taxation, and corporate compliance. Leads the firm's engagements and provides strategic guidance for clients across sectors.</p>
+                <div style="background: var(--accent); color: white; padding: 10px 20px; border-radius: 20px; display: inline-block; margin-top: 20px;">
+                    <strong>22+ Years Experience</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="manpower">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Manpower</h2>
+                <p>Dedicated team of professionals</p>
+            </div>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number" data-target="1">0</div>
+                    <p>Proprietor</p>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" data-target="7">0</div>
+                    <p>Qualified CMAs</p>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" data-target="15">0</div>
+                    <p>Semi-Qualified Staff</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>Contact Us</h2>
+                <p>Get in touch for your cost accounting needs</p>
+            </div>
+            <div class="contact-grid">
+                <div class="card">
+                    <h3>Main Office</h3>
+                    <p>260, Grand Trunk Road, Kotrung, Uttarpara, Hooghly - 712258, West Bengal</p>
+                    <h3>Branch Office</h3>
+                    <p>12A/2, B. N. Road, Serampore, Hooghly - 712201, West Bengal</p>
+                    <p><strong>Phone:</strong> 9830566068</p>
+                    <p><strong>Email:</strong> <a href="mailto:sdconsultancy01@gmail.com">sdconsultancy01@gmail.com</a></p>
+                    <p><strong>Registration:</strong> Cost Accountant No. 101762 (ICMAI)</p>
+                </div>
+                <div class="map">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3684.123456789012!2d88.34567890123456!3d22.65432109876543!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjLCsDM5JzE1LjUiTiA4OMKwMjAnNDQuMyJF!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p><strong>Samar Dhar & Associates</strong></p>
+            <p>Cost Accountant Registration No. 101762 (ICMAI)</p>
+            <p>Practising Cost & Management Accountants Since 2004</p>
+            <p><a href="mailto:sdconsultancy01@gmail.com">sdconsultancy01@gmail.com</a> | <a href="tel:9830566068">9830566068</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+        const icon = themeToggle.querySelector('i');
+
+        // Check system preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            html.setAttribute('data-theme', 'dark');
+            icon.className = 'fas fa-sun';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                html.setAttribute('data-theme', 'light');
+                icon.className = 'fas fa-moon';
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                icon.className = 'fas fa-sun';
+            }
+        });
+
+        // Navbar shrink on scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('shrink');
+            } else {
+                navbar.classList.remove('shrink');
+            }
+        });
+
+        // Mobile menu
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('nav-links');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Count-up animation
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const statNumbers = entry.target.querySelectorAll('.stat-number');
+                    statNumbers.forEach(stat => {
+                        const target = parseInt(stat.getAttribute('data-target'));
+                        let count = 0;
+                        const increment = target / 100;
+                        const timer = setInterval(() => {
+                            count += increment;
+                            if (count >= target) {
+                                stat.textContent = target;
+                                clearInterval(timer);
+                            } else {
+                                stat.textContent = Math.floor(count);
+                            }
+                        }, 30);
+                    });
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const manpowerSection = document.getElementById('manpower');
+        statsObserver.observe(manpowerSection);
+
+        // Smooth scrolling for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html></content>
+<parameter name="filePath">c:\Users\User\Desktop\SD Associates\index.html
