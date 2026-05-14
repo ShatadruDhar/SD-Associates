@@ -1,6 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAttendanceForUserAndDate, getAllUsers, getAttendanceRecords, getUserById, storeAttendance } from '@/lib/data';
+import {
+  getAttendanceForUserAndDate,
+  getAllUsers,
+  getAttendanceRecords,
+  getUserById,
+  storeAttendance,
+} from '@/lib/data';
 import { getSessionFromRequest } from '@/lib/session';
+
+/** Accepts only YYYY-MM-DD strings that are valid calendar dates. */
+function isValidDate(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const d = new Date(`${value}T00:00:00Z`);
+  return !isNaN(d.getTime()) && d.toISOString().startsWith(value);
+}
+
+/** Accepts only YYYY-MM strings. */
+function isValidMonth(value: string): boolean {
+  return /^\d{4}-\d{2}$/.test(value);
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,12 +35,12 @@ export async function GET(request: NextRequest) {
     }
 
     const url = new URL(request.url);
-    const month = url.searchParams.get('month')?.trim();
+    const monthParam = url.searchParams.get('month')?.trim() ?? '';
+    const month = monthParam && isValidMonth(monthParam) ? monthParam : undefined;
     const userIdParam = url.searchParams.get('userId')?.trim() || undefined;
-    const datePrefix = month ? month : undefined;
 
     if (user.role === 'boss') {
-      const attendance = await getAttendanceRecords({ userId: userIdParam, datePrefix });
+      const attendance = await getAttendanceRecords({ userId: userIdParam, datePrefix: month });
       const users = await getAllUsers();
 
       const attendanceWithNames = attendance.map((record) => {
@@ -30,14 +48,14 @@ export async function GET(request: NextRequest) {
         return {
           ...record,
           fullName: owner?.fullName ?? 'Unknown',
-          email: owner?.email ?? 'unknown@company.local'
+          email: owner?.email ?? 'unknown@company.local',
         };
       });
 
       return NextResponse.json({ attendance: attendanceWithNames, month: month ?? null });
     }
 
-    const attendance = await getAttendanceRecords({ userId: user.id, datePrefix });
+    const attendance = await getAttendanceRecords({ userId: user.id, datePrefix: month });
     return NextResponse.json({ attendance, month: month ?? null });
   } catch {
     return NextResponse.json({ error: 'Unable to load attendance report.' }, { status: 500 });
@@ -59,16 +77,39 @@ export async function POST(request: NextRequest) {
     }
 
     const payload = await request.json().catch(() => ({}));
-    const date = String(payload.date ?? new Date().toISOString().slice(0, 10));
-    const markedAt = String(payload.markedAt ?? new Date().toISOString());
 
-    const existing = await getAttendanceForUserAndDate(user.id, date);
+    // Validate date: must be a real YYYY-MM-DD and must be today (UTC) to
+    // prevent clients from backdating attendance.
+    const todayUtc = new Date().toISOString().slice(0, 10);
+    const rawDate = String(payload.date ?? '');
 
-    if (existing) {
-      return NextResponse.json({ error: 'Attendance has already been marked for today.' }, { status: 409 });
+    if (!isValidDate(rawDate)) {
+      return NextResponse.json(
+        { error: 'Invalid date. Expected format: YYYY-MM-DD.' },
+        { status: 400 }
+      );
     }
 
-    const record = await storeAttendance({ userId: user.id, date, markedAt });
+    if (rawDate !== todayUtc) {
+      return NextResponse.json(
+        { error: 'Attendance can only be marked for today.' },
+        { status: 400 }
+      );
+    }
+
+    // Use server time for markedAt — never trust the client timestamp.
+    const markedAt = new Date().toISOString();
+
+    const existing = await getAttendanceForUserAndDate(user.id, rawDate);
+
+    if (existing) {
+      return NextResponse.json(
+        { error: 'Attendance has already been marked for today.' },
+        { status: 409 }
+      );
+    }
+
+    const record = await storeAttendance({ userId: user.id, date: rawDate, markedAt });
 
     return NextResponse.json({ attendance: record }, { status: 201 });
   } catch {

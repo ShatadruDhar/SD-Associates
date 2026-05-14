@@ -16,20 +16,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const existing = await findUserByEmail(email);
+    // Prevent signing up with the reserved boss email.
+    const bossEmail = normalizeEmail(String(process.env.BOSS_EMAIL ?? ''));
+    if (bossEmail && email === bossEmail) {
+      return NextResponse.json(
+        { error: 'An account with that email already exists.' },
+        { status: 409 }
+      );
+    }
 
+    const existing = await findUserByEmail(email);
     if (existing) {
-      return NextResponse.json({ error: 'An account with that email already exists.' }, { status: 409 });
+      return NextResponse.json(
+        { error: 'An account with that email already exists.' },
+        { status: 409 }
+      );
     }
 
     const { passwordHash, salt } = hashPassword(password);
-    const role = process.env.BOSS_EMAIL && email === normalizeEmail(process.env.BOSS_EMAIL)
-      ? 'boss'
-      : 'employee';
 
-    const user = await createUser({ fullName, email, passwordHash, salt, role });
+    // Signup always creates employee accounts. The boss account is managed
+    // exclusively through the BOSS_EMAIL / BOSS_PASSWORD env vars and is
+    // upserted atomically on first login via upsertBossUser().
+    const user = await createUser({ fullName, email, passwordHash, salt, role: 'employee' });
 
-    return NextResponse.json({ user: { id: user.id, fullName: user.fullName, email: user.email, role: user.role } }, { status: 201 });
+    return NextResponse.json(
+      { user: { id: user.id, fullName: user.fullName, email: user.email, role: user.role } },
+      { status: 201 }
+    );
   } catch {
     return NextResponse.json({ error: 'Unable to create the account right now.' }, { status: 500 });
   }
